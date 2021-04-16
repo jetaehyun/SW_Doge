@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+sw_doge
+
+# build
+.build/
+
+# vscode workspace
+*.code-workspace
