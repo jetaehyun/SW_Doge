@@ -5,40 +5,57 @@
 #include <cstdint>
 #include <string>
 
+#include "../include/data_manipulation.h"
+
+#define NO_USER_SPECIFIED 0
+#define PAYLOAD_SIZE 28
+#define DATA_PACKET_SIZE 37
+#define PAYLOAD_OFFSET 8
+
+using std::cout;
+using std::endl;
+using namespace Data_Manipulation;
+
 /*
     // 0
     // type
     // 4
-    // user profile
+    // user id
     // 8
     // payload
     // 36
     // checksum
-    // 40
+    // 37
 
 */
 
 class Data_Packet {
     public:
 
-        Data_Packet() {}
+        Data_Packet(uint32_t user_id) { this->user_id = user_id; }
+
+        Data_Packet() { this->user_id = NO_USER_SPECIFIED; }
+
         virtual ~Data_Packet() {}
 
-        virtual void create_payload() = 0;
+
+        
+        virtual void create_packet() = 0;
         virtual void unpack_payload() = 0;
-        virtual void pack_payload() = 0;
+        virtual uint8_t *get_packet() = 0;
+        virtual void packet_details() = 0;
+        bool unpack_packet(uint8_t *packet);
 
 
     protected:
 
         enum packet_type_e { light, testing };
 
-        typedef struct _data_packet_t {
-            uint32_t type;
-            uint32_t user_id;
-            uint8_t payload[28];
-            uint32_t checksum;
-        } data_packet_t;
+        uint32_t user_id;
+        uint8_t packet[DATA_PACKET_SIZE] = {0};
+
+        uint8_t calculate_checksum();
+        bool verify_checksum(uint8_t *packet);
 
 };
 
